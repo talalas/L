@@ -1,55 +1,131 @@
-local InsertService = game:GetService("InsertService")
-local Players = game:GetService("Players")
+local part = Instance.new("Part")
+part.Name = "Bound"
+part.Parent = workspace
+game.Lighting.MainColorCorrection.TintColor = Color3.fromRGB(0, 0, 255)
+game.Lighting.MainColorCorrection.Contrast = 0.2
+game.Lighting.MainColorCorrection.Saturation = -0.7
+
+local tween = game:GetService("TweenService")
+tween:Create(game.Lighting.MainColorCorrection, TweenInfo.new(5), {Contrast = 0}):Play()
+tween:Create(game.Lighting.MainColorCorrection, TweenInfo.new(5), {Saturation = 0}):Play()
+
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
+local TW = TweenService:Create(game.Lighting.MainColorCorrection, TweenInfo.new(5),{TintColor = Color3.fromRGB(255, 255, 255)})
+TW:Play()
 
-local SPEED = 250
-local DISTANCE = 10
-local KILL_DISTANCE = 60
-local REVOKE_ID = 136103567150330
+local cue1 = Instance.new("Sound")
+cue1.Parent = game.Workspace
+cue1.Name = "Scream"
+cue1.SoundId = "rbxassetid://local part = Instance.new("Part")
+part.Name = "Bound"
+part.Parent = workspace
+game.Lighting.MainColorCorrection.TintColor = Color3.fromRGB(0, 0, 255)
+game.Lighting.MainColorCorrection.Contrast = 0.2
+game.Lighting.MainColorCorrection.Saturation = -0.7
 
--- Hàm tuần tra
-local function patrol(revoke)
-	local startPos = revoke.PrimaryPart.Position
-	local endPos = startPos + Vector3.new(DISTANCE, 0, 0)
-	local time = DISTANCE / SPEED
+local tween = game:GetService("TweenService")
+tween:Create(game.Lighting.MainColorCorrection, TweenInfo.new(5), {Contrast = 0}):Play()
+tween:Create(game.Lighting.MainColorCorrection, TweenInfo.new(5), {Saturation = 0}):Play()
 
-	local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear)
-	local moveToEnd = TweenService:Create(revoke.PrimaryPart, tweenInfo, {CFrame = CFrame.new(endPos)})
-	local moveToStart = TweenService:Create(revoke.PrimaryPart, tweenInfo, {CFrame = CFrame.new(startPos)})
+local TweenService = game:GetService("TweenService")
+local TW = TweenService:Create(game.Lighting.MainColorCorrection, TweenInfo.new(5),{TintColor = Color3.fromRGB(255, 255, 255)})
+TW:Play()
 
-	coroutine.wrap(function()
-		for i = 1, 5 do
-			moveToEnd:Play()
-			moveToEnd.Completed:Wait()
-			moveToStart:Play()
-			moveToStart.Completed:Wait()
-		end
-	end)()
+local cue1 = Instance.new("Sound")
+cue1.Parent = game.Workspace
+cue1.Name = "Scream"
+cue1.SoundId = "rbxassetid://135681477340249"
+local distort = Instance.new("DistortionSoundEffect")
+distort.Parent = cue1
+distort.Level = 0
+local distort2 = Instance.new("DistortionSoundEffect")
+distort2.Parent = cue1
+distort2.Level = 0
+local pitch = Instance.new("PitchShiftSoundEffect")
+pitch.Parent = cue1
+pitch.Octave = 1
+local pitch2 = Instance.new("PitchShiftSoundEffect")
+pitch2.Parent = cue1
+pitch2.Octave = 1
+local pitch3 = Instance.new("PitchShiftSoundEffect")
+pitch3.Parent = cue1
+pitch3.Octave = 1
+cue1.Volume = 3
+cue1:Play()
 
-	-- Theo dõi người chơi để giết nếu lại gần
-	RunService.Heartbeat:Connect(function()
-		if not revoke or not revoke.Parent then return end
-		for _, player in ipairs(Players:GetPlayers()) do
-			if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") then
-				local distance = (player.Character.HumanoidRootPart.Position - revoke.PrimaryPart.Position).Magnitude
-				if distance <= KILL_DISTANCE then
-					player.Character.Humanoid.Health = 0 -- Giết người chơi
-				end
-			end
-		end
-	end)
-end
+local cue2 = Instance.new("Sound")
+cue2.Parent = game.Workspace
+cue2.Name = "Spawn"
+cue2.SoundId = "rbxassetid://0"
+cue2.Volume = 3
+cue2:Play()
 
--- Spawn Revoke khi người chơi xuất hiện
-Players.PlayerAdded:Connect(function(player)
-	player.CharacterAdded:Connect(function(character)
-		wait(1)
-		local revokeAsset = InsertService:LoadAsset(REVOKE_ID)
-		local revokeClone = revokeAsset:GetChildren()[1]
-		revokeClone:SetPrimaryPartCFrame(character.PrimaryPart.CFrame * CFrame.new(5, 0, 0))
-		revokeClone.Parent = workspace
-
-		patrol(revokeClone)
-	end)
+local CameraShaker = require(game.ReplicatedStorage.CameraShaker)
+local camara = game.Workspace.CurrentCamera
+local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCf)
+    camara.CFrame = camara.CFrame * shakeCf
 end)
+camShake:Start()
+camShake:ShakeOnce(10, 3, 0.1, 6, 2, 0.5)
+
+local speed = math.random(100, 100)
+local delay = {"2", "2.5", "1.5", "1", "2.1"}
+local fuck = delay[math.random(1, #delay)]
+
+-- Tạo hàm để tạo entity
+local function createEntityWithParams(name, modelId)
+    local Creator = loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/memaybeo/refs/heads/main/asda"))()
+
+    local entity = Creator.createEntity({
+        CustomName = name, -- Custom name of your entity
+        Model = https://github.com/DoorsHubs/Doors-Hubs/raw/refs/heads/main/3.rbxm, -- Can be GitHub file or rbxassetid
+        Speed = speed, -- Percentage, 100 = default Rush speed
+        DelayTime = fuck, -- Time before starting cycles (seconds)
+        HeightOffset = 0.3,
+        CanKill = true,
+        BreakLights = false,
+        KillRange = 40,
+        BackwardsMovement = true,
+        FlickerLights = {false, 2.5}, -- Enabled
+        Cycles = {Min = 1, Max = 1},
+        CamShake = {true, {5, 15, 0.1, 1}, 100}, -- Shake values
+        Jumpscare = {
+            false, -- Enabled ('false' if you don't want jumpscare)
+            {
+                Image1 = "https://www.roblox.com/library/87127268745716", -- Image1 url
+                Image2 = "https://www.roblox.com/library/87127268745716", -- Image2 url
+                Shake = false,
+                Sound1 = {0, {Volume = 0.5}},
+                Sound2 = {5567523008, {Volume = 0.5}},
+                Flashing = {true, Color3.fromRGB(0, 0, 135)},
+                Tease = {false, 1, 3},
+            },
+        },
+        CustomDialog = {"w"}, -- Custom death message
+    })
+
+    -----[[ Advanced ]]-----
+    entity.Debug.OnEntityEnteredRoom = function(room)
+        print("Entity:", entity, "has entered room:", room)
+    end
+
+    entity.Debug.OnEntitySpawned = function(entityModel)
+        print("Entity has spawned:", entityModel)
+        wait(15)
+        entityModel:Destroy() -- Entity model will be destroyed after 15 seconds
+    end
+
+    entity.Debug.OnEntityDespawned = function(entityModel)
+        print("Entity has despawned:", entityModel)
+        cue1:Destroy()
+        cue2:Destroy()
+    end
+
+    entity.Debug.OnEntityStartMoving = function(entityModel)
+        print("Entity has started moving:", entityModel)
+        game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+    end
+
+    -- Run the created entity
+    Creator.runEntity(entity)
+end
