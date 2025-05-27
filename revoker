@@ -1,0 +1,55 @@
+local InsertService = game:GetService("InsertService")
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local SPEED = 250
+local DISTANCE = 10
+local KILL_DISTANCE = 60
+local REVOKE_ID = 136103567150330
+
+-- Hàm tuần tra
+local function patrol(revoke)
+	local startPos = revoke.PrimaryPart.Position
+	local endPos = startPos + Vector3.new(DISTANCE, 0, 0)
+	local time = DISTANCE / SPEED
+
+	local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear)
+	local moveToEnd = TweenService:Create(revoke.PrimaryPart, tweenInfo, {CFrame = CFrame.new(endPos)})
+	local moveToStart = TweenService:Create(revoke.PrimaryPart, tweenInfo, {CFrame = CFrame.new(startPos)})
+
+	coroutine.wrap(function()
+		for i = 1, 5 do
+			moveToEnd:Play()
+			moveToEnd.Completed:Wait()
+			moveToStart:Play()
+			moveToStart.Completed:Wait()
+		end
+	end)()
+
+	-- Theo dõi người chơi để giết nếu lại gần
+	RunService.Heartbeat:Connect(function()
+		if not revoke or not revoke.Parent then return end
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") then
+				local distance = (player.Character.HumanoidRootPart.Position - revoke.PrimaryPart.Position).Magnitude
+				if distance <= KILL_DISTANCE then
+					player.Character.Humanoid.Health = 0 -- Giết người chơi
+				end
+			end
+		end
+	end)
+end
+
+-- Spawn Revoke khi người chơi xuất hiện
+Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function(character)
+		wait(1)
+		local revokeAsset = InsertService:LoadAsset(REVOKE_ID)
+		local revokeClone = revokeAsset:GetChildren()[1]
+		revokeClone:SetPrimaryPartCFrame(character.PrimaryPart.CFrame * CFrame.new(5, 0, 0))
+		revokeClone.Parent = workspace
+
+		patrol(revokeClone)
+	end)
+end)
